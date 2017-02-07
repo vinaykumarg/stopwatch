@@ -5,7 +5,8 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:inputType="time"/>
+        android:inputType="time"
+        android:id="@+id/time" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -37,6 +38,6 @@
         android:indeterminate="false"
         android:maxHeight="5dip"
         android:minHeight="5dip"
-        android:progress="50"
+        android:progress="0"
         android:progressDrawable="@drawable/greenprogress" />
 </LinearLayout>
