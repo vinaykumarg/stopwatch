@@ -1,8 +1,14 @@
 package com.example.vinayg.stopwatch;
 
 import android.app.Fragment;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +25,13 @@ public class Timer extends Fragment {
     private TextView time;
     private EditText tm;
     private ProgressBar pb;
+    Intent resultIntent;
+    PendingIntent pIntent;
     static MyCountDownTimer myCountDownTimer;
     Long sec;
+    NotificationCompat.Builder notification;
+    TaskStackBuilder stackBuilder;
+    NotificationManager manager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,12 +49,12 @@ public class Timer extends Fragment {
                     public void onClick(View v) {
                         String st = tm.getText().toString();
                         sec = Long.parseLong(st);
+                        start.setText("STOP");
                         int a = Integer.parseInt(st);
                         pb.setMax(a);
                         tm.setVisibility(View.INVISIBLE);
-                        myCountDownTimer = new MyCountDownTimer(sec*1000, 1000);
+                        myCountDownTimer = new MyCountDownTimer(sec * 1000, 1000);
                         myCountDownTimer.start();
-
                     }
                 });
 
@@ -57,6 +68,7 @@ public class Timer extends Fragment {
                 }
                 tm.setVisibility(View.VISIBLE);
                 time.setText("");
+                pb.setProgress(0);
 
             }
         });
@@ -100,6 +112,25 @@ public class Timer extends Fragment {
         public void onFinish() {
             time.setText("");
             pb.setProgress(pb.getMax());
+            notification = new NotificationCompat.Builder(getActivity());
+            //Title for Notification
+            notification.setContentTitle("STOPWATCH");
+            //Message in the Notification
+            notification.setContentText("Count Down has been completed");
+            //Alert shown when Notification is received
+            notification.setTicker("New Message Alert!");
+            //Icon to be set on Notification
+            notification.setSmallIcon(R.drawable.noti_ico);
+            //Creating new Stack Builder
+            stackBuilder = TaskStackBuilder.create(getActivity());
+            stackBuilder.addParentStack(Result.class);
+            //Intent which is opened when notification is clicked
+            resultIntent = new Intent(getActivity(), Result.class);
+            stackBuilder.addNextIntent(resultIntent);
+            pIntent =  stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            notification.setContentIntent(pIntent);
+            manager =(NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(0, notification.build());
         }
 
 

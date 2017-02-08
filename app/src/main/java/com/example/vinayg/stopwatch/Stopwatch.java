@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +21,39 @@ public class Stopwatch extends Fragment {
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
     private TextView timerValue;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("onResume","called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("onPause","called");
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("onStart","called");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("onStart","called");
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stopwatch, container, false);
         final Button start = (Button) view.findViewById(R.id.start);
         Button reset = (Button) view.findViewById(R.id.reset);
         timerValue = (TextView) view.findViewById(R.id.textView);
+        Log.d("onCreateView","called");
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
