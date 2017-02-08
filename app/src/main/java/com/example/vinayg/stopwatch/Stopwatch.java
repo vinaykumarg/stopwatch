@@ -21,6 +21,7 @@ public class Stopwatch extends Fragment {
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
     private TextView timerValue;
+    private Button start,reset;
 
     @Override
     public void onResume() {
@@ -50,8 +51,8 @@ public class Stopwatch extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stopwatch, container, false);
-        final Button start = (Button) view.findViewById(R.id.start);
-        Button reset = (Button) view.findViewById(R.id.reset);
+        start = (Button) view.findViewById(R.id.start);
+        reset = (Button) view.findViewById(R.id.reset);
         timerValue = (TextView) view.findViewById(R.id.textView);
         Log.d("onCreateView","called");
         start.setOnClickListener(new View.OnClickListener() {

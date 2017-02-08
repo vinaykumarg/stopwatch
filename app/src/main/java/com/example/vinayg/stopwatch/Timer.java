@@ -17,47 +17,49 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import static com.example.vinayg.stopwatch.R.mipmap.ic_launcher;
 
 /**
  * Created by vinay.g on 06-Feb-17.
  */
 public class Timer extends Fragment {
-    private TextView time;
-    private EditText tm;
-    private ProgressBar pb;
+    private TextView TimerView;
+    private EditText Timerinput;
+    private ProgressBar progressBar;
     Intent resultIntent;
-    PendingIntent pIntent;
     static MyCountDownTimer myCountDownTimer;
-    Long sec;
+    Long CountDown;
     NotificationCompat.Builder notification;
     TaskStackBuilder stackBuilder;
     NotificationManager manager;
+    Button start,reset,stop;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.timer, container, false);
-        final Button start = (Button) view.findViewById(R.id.start);
-        Button reset = (Button) view.findViewById(R.id.reset);
-        tm = (EditText) view.findViewById(R.id.time);
-        time = (TextView) view.findViewById(R.id.tv1);
-            pb = (ProgressBar)view.findViewById(R.id.ProgressBar);
+        view = inflater.inflate(R.layout.timer, container, false);
+        start = (Button) view.findViewById(R.id.start);
+        reset = (Button) view.findViewById(R.id.reset);
+        stop = (Button) view.findViewById(R.id.stop);
+        Timerinput = (EditText) view.findViewById(R.id.time);
+        progressBar = (ProgressBar)view.findViewById(R.id.ProgressBar);
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String st = tm.getText().toString();
-                        sec = Long.parseLong(st);
-                        start.setText("STOP");
+                String st = Timerinput.getText().toString();
+                if(!st.equals("")) {
+                    if(myCountDownTimer==null) {
+                        CountDown = Long.parseLong(st);
                         int a = Integer.parseInt(st);
-                        pb.setMax(a);
-                        tm.setVisibility(View.INVISIBLE);
-                        myCountDownTimer = new MyCountDownTimer(sec * 1000, 1000);
+                        progressBar.setMax(a);
+                        myCountDownTimer = new MyCountDownTimer(CountDown * 1000, 1000);
                         myCountDownTimer.start();
                     }
-                });
-
+                } else {
+                    Toast.makeText(getActivity(),"enter time",Toast.LENGTH_SHORT);
+                }
             }
         });
         reset.setOnClickListener(new View.OnClickListener() {
@@ -66,35 +68,26 @@ public class Timer extends Fragment {
                 if (myCountDownTimer!=null) {
                     myCountDownTimer.cancel();
                 }
-                tm.setVisibility(View.VISIBLE);
-                time.setText("");
-                pb.setProgress(0);
+                Timerinput.setText("");
+                progressBar.setProgress(0);
 
+            }
+        });
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
             }
         });
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        tm.setVisibility(View.VISIBLE);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        tm.setVisibility(View.INVISIBLE);
-        Log.d("resumed","hi");
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("paused","hi");
-    }
+
 
     public class MyCountDownTimer extends CountDownTimer {
+        
 
         public MyCountDownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -103,36 +96,30 @@ public class Timer extends Fragment {
         @Override
         public void onTick(long millisUntilFinished) {
             int progress = (int) (millisUntilFinished/1000);
-            time.setText(progress+"");
+            Timerinput.setText(progress+"");
             Log.d("doing",progress+"");
-            pb.setProgress(pb.getMax()-progress);
+            progressBar.setProgress(progressBar.getMax()-progress);
         }
 
         @Override
         public void onFinish() {
-            time.setText("");
-            pb.setProgress(pb.getMax());
-            notification = new NotificationCompat.Builder(getActivity());
-            //Title for Notification
-            notification.setContentTitle("STOPWATCH");
-            //Message in the Notification
-            notification.setContentText("Count Down has been completed");
-            //Alert shown when Notification is received
-            notification.setTicker("New Message Alert!");
-            //Icon to be set on Notification
-            notification.setSmallIcon(R.drawable.noti_ico);
-            //Creating new Stack Builder
-            stackBuilder = TaskStackBuilder.create(getActivity());
-            stackBuilder.addParentStack(Result.class);
-            //Intent which is opened when notification is clicked
-            resultIntent = new Intent(getActivity(), Result.class);
-            stackBuilder.addNextIntent(resultIntent);
-            pIntent =  stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            notification.setContentIntent(pIntent);
-            manager =(NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+            TimerView.setText("");
+            progressBar.setProgress(progressBar.getMax());
+            NotificationCompat.Builder  notification = new NotificationCompat.Builder(getActivity());
+            notification.setContentTitle("Timer");
+            notification.setContentText("Alert");
+            notification.setTicker("Time is up!");
+            notification.setSmallIcon(ic_launcher);
+            Intent resultIntent = new Intent(getActivity(), MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(getActivity(), 0, resultIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            notification.setContentIntent(contentIntent);
+            NotificationManager manager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(0, notification.build());
         }
 
 
     }
 }
+
+    

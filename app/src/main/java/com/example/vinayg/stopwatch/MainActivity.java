@@ -12,8 +12,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity  {
     TextView timer;
     TextView stopwatch;
-    View timerfragment;
-    View stopwatchfragment;
+    Fragment uifrag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +21,8 @@ public class MainActivity extends AppCompatActivity  {
         timer.setCompoundDrawablesWithIntrinsicBounds(R.drawable.timer1, 0, 0, 0);
         stopwatch = (TextView)findViewById(R.id.stopwatch);
         stopwatch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.stopwatch1, 0, 0, 0);
+        uifrag = new Timer();
+        replaceFragment(uifrag);
         timer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -31,9 +32,6 @@ public class MainActivity extends AppCompatActivity  {
                 stopwatch.setBackgroundResource(R.drawable.nolines);
                 stopwatch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.stopwatch1, 0, 0, 0);
                 stopwatch.setTextColor(Color.parseColor("#000000"));
-                Fragment mFragment = getFragmentManager().findFragmentById(R.id.fragment);
-                if (mFragment instanceof Timer)
-                    return;
                 Fragment fragment = new Timer();
                 replaceFragment(fragment);
             }
@@ -51,6 +49,7 @@ public class MainActivity extends AppCompatActivity  {
                 replaceFragment(fragment);
             }
         });
+
 
     }
     private void replaceFragment (Fragment fragment){
@@ -77,15 +76,6 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-    }
-    @Override
-    public void onBackPressed(){
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1){
-            finish();
-        }
-        else {
-            super.onBackPressed();
-        }
     }
 
 }
